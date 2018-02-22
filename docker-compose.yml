@@ -1,0 +1,11 @@
+version: "2"
+services:
+
+  web:
+#     build: .
+    image: tplatform/aws-linux-httpd24-php70
+    volumes:
+          - ./app:/var/www/html/
+    ports:
+          - '8080:80'
+ 
