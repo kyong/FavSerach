@@ -14,3 +14,5 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/tw', 'Twitter@index');
+Route::get('/twreceive', 'Twitter@receiveTwitter')->name('receive');
