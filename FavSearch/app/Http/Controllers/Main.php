@@ -35,9 +35,10 @@ class Main extends Controller
 
 
     const API_REQUEST_LIMIT = 3;
+    const API_COUNT = 200;
     function searchApiFavoriteKeyword( $keyword, $matches=[], $more_id=null, $request_count=0 )
     {
-        $param = ['count' => 200, 'format' => 'array'];
+        $param = ['count' => self::API_COUNT, 'format' => 'array'];
         if( !is_null($more_id)){
             $param['max_id'] = $more_id;
         }
