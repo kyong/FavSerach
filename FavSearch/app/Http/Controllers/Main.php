@@ -8,13 +8,10 @@ class Main extends Controller
 {
     function index(Request $request)
     {
-        if( !\Session::get('access_token')){
-            return redirect(route('twitter.login'));
-        }
         $matches = [];
-        
-        if(!$request->input('keyword')){
-            $keyword = '';
+        $keyword = '';
+
+        if(!$request->input('keyword') || !\Session::get('access_token') ){
             return view('search')->with(compact('matches', 'keyword'));
         }else{
             $keyword = $request->input('keyword');
@@ -22,10 +19,12 @@ class Main extends Controller
             try{
                 $matches = $this->searchApiFavoriteKeyword( $keyword, $matches);
             }
-            catch (Exception $e)
+            catch (\Exception $e)
             {
                 // dd(Twitter::error());
-                dd(Twitter::logs());
+                // dd();
+                $error = \Twitter::logs();
+                return view('search')->with(compact('matches', 'keyword', 'error'));
             }
             
             // dd($matches);
@@ -34,7 +33,7 @@ class Main extends Controller
     }
 
 
-    const API_REQUEST_LIMIT = 3;
+    const API_REQUEST_LIMIT = 5;
     const API_COUNT = 200;
     function searchApiFavoriteKeyword( $keyword, $matches=[], $more_id=null, $request_count=0 )
     {
@@ -62,6 +61,10 @@ class Main extends Controller
             }
 
             if(strpos( $response['text'], $keyword )!==false){
+                $matches[] = $response;
+            }else if(strpos( $response['user']['name'], $keyword )!==false){
+                $matches[] = $response;
+            }else if(strpos( $response['user']['screen_name'], $keyword )!==false){
                 $matches[] = $response;
             }
         }
